@@ -8,6 +8,7 @@ editor: visual
 library(datapasta)
 library(tidyverse)
 library(palmerpenguins)
+library(lubridate)
 ```
 
 ## Mutating Joins
@@ -94,4 +95,56 @@ refresher_1 <- penguins |>
   #filter(!is.na(flipper_length_mm)) |> 
   #group_by(sex) |> 
   #summarize()
+```
+
+## Dates and times with `lubridate`
+
+```{r}
+my_date <- "03-15-1998"
+lubridate::mdy(my_date)
+
+my_date <- "11/7/2022" # this could be nov 7 or july 11. if this is dmy:
+lubridate::dmy(my_date)
+
+my_date <- "08-Jun-1974"
+lubridate::dmy(my_date)
+
+my_date <- "19610518"
+my_real_date <- lubridate::ymd(my_date)
+```
+
+## Trying to Break Stuff
+
+```{r}
+lubridate::mdy("1942-08-30")
+```
+
+```{r}
+time <- "2022-08-12 11:18"
+time <- lubridate::ymd_hm(time)
+```
+
+```{r}
+with_tz(time, "America/Los_Angeles") # converts from UTC time to pacific time
+
+with_tz(time, "Europe/Rome")
+
+# pull out specific aspects of the datetime. Helpful when you want to group by months! or add a new column that only contains the month for summary statistics
+my_time <- lubridate::ymd_hms(time)
+
+year(my_time)
+hour(my_time)
+```
+
+```{r}
+teddy_bday <- lubridate::ymd("20170615")
+
+#what day of the week is this?
+wday(teddy_bday, label = TRUE)
+week(teddy_bday)
+
+my_birthday <- lubridate::ymd("19961021")
+wday(my_birthday, label = TRUE)
+
+
 ```
