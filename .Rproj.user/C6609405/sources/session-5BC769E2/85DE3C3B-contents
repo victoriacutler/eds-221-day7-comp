@@ -4,14 +4,94 @@ format: html
 editor: visual
 ---
 
-## Joins
+```{r}
+library(datapasta)
+library(tidyverse)
+library(palmerpenguins)
+```
+
+## Mutating Joins
+
+```{r}
+# using "Addins" -> paste with data pasta. This is highly not recommended because not reproducible really.
+
+animals <- tibble::tribble(
+             ~location,   ~species,  ~maturity,
+              "lagoon",   "bobcat",    "adult",
+               "bluff",   "coyote", "juvenile",
+               "creek",      "fox",    "adult",
+                "oaks", "squirrel", "juvenile",
+               "bluff",   "bobcat",    "adult"
+             )
+
+sites <- tibble::tribble(
+           ~location,      ~full_site_name, ~jurisdiction,
+             "beach",       "Goleta Beach",     "SB City",
+            "lagoon",        "UCSB Lagoon",        "UCSB",
+             "bluff",       "Ellwood Mesa",     "SB City",
+              "oaks", "Fremont Campground",        "USFS"
+           )
+```
 
 ### Full Join
 
+```{r}
+full_join_example <- full_join(animals, sites, by = "location") # in this case, the key is the same and unique but if the key column names differ we can use "by = c("a" = "b")"
+```
+
 ### Left Join
+
+```{r}
+left_join_example <- left_join(x = animals, y = sites, by = "location")
+```
 
 ### Inner Join
 
+```{r}
+inner_join_example <- inner_join(animals, sites, by = "location")
+```
+
+```{r}
+# example where key isn't the same exact name
+sites_2 <- sites |> 
+  rename(loc = location)
+
+inner_join_example2 <- inner_join(animals, sites_2, by = c("location" = "loc"))
+```
+
+## Filtering Joins
+
 ### Semi Join
 
+-   returns all rows from x that have a key match in y
+
+    ```{r}
+    semi_join_example <- semi_join(x = animals, y = sites) # creek is in animals but not in sites so this will get dropped
+    ```
+
 ### Anti Join
+
+-   only returns rows in x that don't have a match in y (what's the key in x that isn't the key in y?)
+
+```{r}
+anti_join_example <- anti_join(animals, sites) # show what's in x that's not in y which is the creek observation
+```
+
+## Refresher 1
+
+```{r}
+refresher_1 <- penguins |> 
+  filter(island %in% c("Biscoe", "Dream")) |> 
+  select(-year, -sex) |> 
+  mutate(body_mass_kg = (body_mass_g / 1000)) |> 
+  rename(location = island)
+```
+
+## Refresher 2
+
+```{r}
+#refresher_2 <- penguins |> 
+  #filter(!is.na(flipper_length_mm)) |> 
+  #group_by(sex) |> 
+  #summarize()
+```
