@@ -170,3 +170,67 @@ time_interval <- interval(day_1, day_2)
 
 time_length(time_interval, "year") # this is asking: how long is the interval between these two dates in years?
 ```
+
+## String Wrangling
+
+```{r}
+my_string <- "Teddy loves eating salmon and socks."
+
+my_string |> 
+  str_detect("pup") # will return false 
+
+my_string <- c("burrito", "fish taco", "taco salad")
+
+my_string |> 
+  str_detect("fish") # will return false true false
+```
+
+```{r}
+skywalkers <- starwars |> 
+  filter(str_detect(string = name, pattern = "Skywalker")) # looks in the name column for skywalker in it
+
+eye_subset <- starwars |> 
+  filter(str_detect(string = eye_color, pattern = c("blue", "green", "brown")))
+```
+
+### str_replace to replace string patterns
+
+```{r}
+firewalks <- starwars |> 
+  mutate(name_2 = str_replace(string = name, pattern = "Sky", replacement = "Fire" ))
+```
+
+### Get rid of white space or extra spaces
+
+```{r}
+# get rid of white space or extra spaces
+feedback <- c("  I ate   some nachos", "Wednesday morning   ")
+str_trim(feedback) # got rid of leading and trailing white space but not interior white space
+feedback <- str_squish(feedback) # got rid of all extra white space
+```
+
+### Change the Cases
+
+```{r}
+# str_to* to change the case
+str_to_lower(feedback)
+str_to_upper(feedback)
+str_to_title(feedback)
+str_to_sentence(feedback)
+
+starwars_lc <- starwars |> 
+  mutate(name_lower = str_to_lower(string = name))
+```
+
+## case_when()
+
+-   another way of doing if else statements
+
+```{r}
+starwars_robot <- starwars |> 
+  mutate(robot_status = case_when(
+    species == "Droid" ~ "A robot!",
+    species == "Human" ~ "It's a human.",
+    TRUE ~ "This is something else."
+  ))
+```
